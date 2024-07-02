@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Launch {
+  id         Int        @id @default(autoincrement())
+  flightId   Int        @unique
+  name       String
+  launchDate DateTime?
+  customers  Customer[]
+  flight     Flight     @relation(fields: [flightId], references: [id])
+  planetId   Int
+  planet     Planet     @relation(fields: [planetId], references: [id])
+  upcoming   Boolean
+  success    Boolean    @default(false)
+}
+
+model Customer {
+  id       Int      @id @default(autoincrement())
+  name     String
+  launches Launch[]
+}
+
+model Flight {
+  id     Int     @id @default(autoincrement())
+  name   String
+  launch Launch?
+}
+
+model Planet {
+  id     Int      @id @default(autoincrement())
+  name   String
+  launch Launch[]
+}
